@@ -5,7 +5,7 @@ const GoogleUserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  displayName: {
+  username: {
     type: String,
     required: true,
   },
