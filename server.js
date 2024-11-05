@@ -4,6 +4,7 @@ import cors from "cors";
 import cookieSession from "cookie-session";
 import passportConfig from "./src/config/passport.js";
 import authenticationRoutes from "./src/routes/authentication.js";
+import esp32 from "./src/routes/esp32.js";
 import connectDB from "./src/config/database.js";
 
 dotenv.config();
@@ -35,6 +36,7 @@ app.use(passportConfig.session());
 
 // Auth Routes
 app.use("/auth", authenticationRoutes);
+app.use("/esp32", esp32);
 
 // Test Route
 app.get("/", (req, res) => {
