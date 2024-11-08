@@ -1,15 +1,18 @@
 import nodemailer from "nodemailer";
-import path from "node:path";
+import path from "path";
+import { fileURLToPath } from "url"; // Necesario para manejar __dirname en ESM
 import { renderTemplate } from "../utils/templates.js";
 
-const __dirname = import.meta.dirname;
+// Calcula __dirname para módulos ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export class EmailService {
   constructor() {
     this.transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: process.env.SMTP_PORT,
-      secure: true,
+      secure: true, // Asegúrate de que sea correcto para tu configuración
       auth: {
         user: process.env.SMTP_EMAIL,
         pass: process.env.SMTP_PASSWORD,
@@ -19,22 +22,26 @@ export class EmailService {
 
   async sendEmail(email, subject, html) {
     try {
-      await this.transporter.sendMail({
+      const info = await this.transporter.sendMail({
         from: process.env.SMTP_EMAIL,
         to: email,
         subject,
         html,
       });
+      console.log(`Email sent successfully: ${info.messageId}`);
     } catch (error) {
-      console.error(error);
+      console.error('Error sending email:', error);
     }
   }
 
   async sendWelcomeEmail(to, name, lastName) {
-    const template = path.join(__dirname, "../templates/welcome.html");
-    const html = await renderTemplate(template, { name: name, lastName: lastName });
-    const subject = "Bienvenido a YouAccess";
-
-    await this.sendEmail(to, subject, html);
+    try {
+      const template = path.join(__dirname, "../templates/emails/welcome.html");
+      const html = await renderTemplate(template, { name, lastName });
+      const subject = "Bienvenido a YouAccess";
+      await this.sendEmail(to, subject, html);
+    } catch (error) {
+      console.error('Error rendering or sending welcome email:', error);
+    }
   }
 }

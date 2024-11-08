@@ -4,7 +4,7 @@ import { generateAccessToken } from "../services/generateJWT.js";
 import { EmailService } from "../services/sendEmails.js";
 
 export const register = async (req, res) => {
-  const requiredFields = ["name", "lastName", "username", "email", "password"];
+  const requiredFields = ["name", "lastName", "email", "password"];
 
   if (!req.body || !requiredFields.every((field) => field in req.body)) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -23,7 +23,9 @@ export const register = async (req, res) => {
     await newUser.save();
 
     const token = generateAccessToken(newUser);
-    EmailService.sendWelcomeEmail(email, name, lastName);
+    
+    const emailService = new EmailService();
+    await emailService.sendWelcomeEmail(email, name, lastName);
 
     res
       .status(201)
