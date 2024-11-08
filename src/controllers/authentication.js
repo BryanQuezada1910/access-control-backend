@@ -1,39 +1,82 @@
-// src/controllers/authController.js
-import passport from "passport";
+import bcrypt from "bcryptjs";
+import User from "../models/User.js";
+import { generateAccessToken } from "../services/generateJWT.js";
+import { EmailService } from "../services/sendEmails.js";
 
-const loginSuccess = (req, res) => {
-  if (req.user) {
-    res.status(200).json({
-      error: false,
-      message: "Successfully Logged In",
-      user: req.user,
-    });
-  } else {
-    res.status(403).json({ error: true, message: "Not Authorized" });
+export const register = async (req, res) => {
+  const requiredFields = ["name", "lastName", "username", "email", "password"];
+
+  if (!req.body || !requiredFields.every((field) => field in req.body)) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  const { name, lastName, email, password } = req.body;
+
+  try {
+    const userExists = await User.findOne({ email });
+
+    if (userExists) {
+      return res.status(400).json({ error: "User already exists" });
+    }
+
+    const newUser = new User({ name, lastName, email, password });
+    await newUser.save();
+
+    const token = generateAccessToken(newUser);
+    EmailService.sendWelcomeEmail(email, name, lastName);
+
+    res
+      .status(201)
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+      })
+      .json({ message: "User registered successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+    console.error(error);
   }
 };
 
-const loginFailed = (req, res) => {
-  res.status(401).json({
-    error: true,
-    message: "Log in failure",
-  });
-};
+export const login = async (req, res) => {
+  const requiredFields = ["email", "password"];
 
-const googleAuth = passport.authenticate("google", { scope: ["profile", "email"] });
+  if (!req.body || !requiredFields.every((field) => field in req.body)) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
 
-const googleCallback = passport.authenticate("google", {
-  successRedirect: process.env.FRONTEND_URL,
-  failureRedirect: "/auth/login/failed",
-});
+  const { email, password } = req.body;
 
-const logout = (req, res) => {
-  req.logout((err) => {
-    if (err) {
-      return res.status(500).json({ error: true, message: "Logout failed" });
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
     }
-    res.redirect(process.env.FRONTEND_URL);
-  });
+
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordCorrect) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    const token = generateAccessToken(user);
+
+    res
+      .status(200)
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+      })
+      .json({ message: "User logged in successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+    console.error(error);
+  }
 };
 
-export { loginSuccess, loginFailed, googleAuth, googleCallback, logout };
+export const logout = (req, res) => {
+  res.status(200).clearCookie("token").json({ message: "User logged out successfully" });
+};

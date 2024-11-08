@@ -1,9 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import cookieSession from "cookie-session";
-import passportConfig from "./src/config/passport.js";
-import authenticationRoutes from "./src/routes/authentication.js";
 import esp32 from "./src/routes/esp32.js";
 import connectDB from "./src/config/database.js";
 
@@ -13,6 +10,8 @@ const app = express();
 
 connectDB();
 
+// Middlewares
+app.use(express.json());
 app.use(
   cors({
     origin: process.env.FRONTEND_URL || "http://localhost:9000",
@@ -21,21 +20,10 @@ app.use(
   })
 );
 
-app.use(
-  cookieSession({
-    name: "session",
-    keys: ["keys1"],
-    maxAge: 24 * 60 * 60 * 1000,
-  })
-);
+// Routes
+// Auth Route
 
-app.use(express.json());
-
-app.use(passportConfig.initialize());
-app.use(passportConfig.session());
-
-// Auth Routes
-app.use("/auth", authenticationRoutes);
+// NFC Data Receiving Route
 app.use("/esp32", esp32);
 
 // Test Route
