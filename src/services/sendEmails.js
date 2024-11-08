@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import path from "node:path";
-import { renderTemplate } from "../utils/renderTemplate.js";
+import { renderTemplate } from "../utils/templates.js";
 
 const __dirname = import.meta.dirname;
 
