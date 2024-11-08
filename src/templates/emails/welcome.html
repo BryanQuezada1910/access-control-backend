@@ -25,7 +25,7 @@
     }
 
     .header {
-      background-color: #fd7014;
+      background-color: #16325b;
       color: #ffffff;
       text-align: center;
       padding: 20px;
@@ -42,6 +42,13 @@
       line-height: 1.6;
     }
 
+    .content img {
+      display: block;
+      margin: auto auto;
+      width: 100px;
+      height: auto;
+    }
+
     .footer {
       background-color: #f4f4f4;
       color: #777777;
@@ -55,7 +62,7 @@
 <body>
   <div class="container">
     <div class="header">
-      ¡Bienvenido/a 🙋!
+      ¡Bienvenido/a 👋!
     </div>
     <div class="content">
       <p>Hola, {{name}} {{lastName}}</p>
@@ -64,11 +71,15 @@
       <p>Gracias por unirte a nosotros.</p>
       <p>Atentamente,</p>
       <p>El equipo de YouAccess</p>
+      <img src="https://res.cloudinary.com/dxn123hvx/image/upload/v1731063325/you-access_ecs6eq.png" alt="Logo">
     </div>
     <div class="footer">
-      &copy; 2024 YouAccess. Todos los derechos reservados.
+      &copy; <span id="year"></span> YouAccess. Todos los derechos reservados.
     </div>
   </div>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 
 </html>
