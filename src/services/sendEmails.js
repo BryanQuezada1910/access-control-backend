@@ -1,9 +1,8 @@
 import nodemailer from "nodemailer";
 import path from "path";
-import { fileURLToPath } from "url"; // Necesario para manejar __dirname en ESM
+import { fileURLToPath } from "url";
 import { renderTemplate } from "../utils/templates.js";
 
-// Calcula __dirname para módulos ESM
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -12,7 +11,7 @@ export class EmailService {
     this.transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: process.env.SMTP_PORT,
-      secure: true, // Asegúrate de que sea correcto para tu configuración
+      secure: true,
       auth: {
         user: process.env.SMTP_EMAIL,
         pass: process.env.SMTP_PASSWORD,
@@ -30,7 +29,7 @@ export class EmailService {
       });
       console.log(`Email sent successfully: ${info.messageId}`);
     } catch (error) {
-      console.error('Error sending email:', error);
+      console.error("Error sending email:", error);
     }
   }
 
@@ -41,7 +40,7 @@ export class EmailService {
       const subject = "Bienvenido a YouAccess";
       await this.sendEmail(to, subject, html);
     } catch (error) {
-      console.error('Error rendering or sending welcome email:', error);
+      console.error("Error rendering or sending welcome email:", error);
     }
   }
 }
