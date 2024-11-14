@@ -6,7 +6,9 @@ const UserSchema = new mongoose.Schema({
   lastName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  uuidCard: { type: String, required: false, unique: true },
   role: { type: String, required: true, default: "user" },
+  created_at: { type: Date, default: Date.now },
 });
 
 UserSchema.pre("save", async function (next) {
