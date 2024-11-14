@@ -1,9 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-
-import esp32 from "./src/routes/esp32.js";
-import authentication from "./src/routes/authentication.js";
 import connectDB from "./src/config/database.js";
 
 dotenv.config();
@@ -24,9 +21,18 @@ app.use(
 
 // Routes
 // Auth Route
-app.use("/api/auth", authentication);
+app.use("/api/auth", (req, res, next) => {
+  import("./src/routes/authentication.js").then(module => {
+    module.default(req, res, next);
+  }).catch(next);
+});
+
 // NFC Data Receiving Route
-app.use("/api/esp32", esp32);
+app.use("/api/esp32", (req, res, next) => {
+  import("./src/routes/esp32.js").then(module => {
+    module.default(req, res, next);
+  }).catch(next);
+});
 
 // Test Route
 app.get("/", (req, res) => {

@@ -23,13 +23,13 @@ export const register = async (req, res) => {
     await newUser.save();
 
     const token = generateAccessToken(newUser);
-    
+
     const emailService = new EmailService();
     await emailService.sendWelcomeEmail(email, name, lastName);
 
     res
       .status(201)
-      .cookie("token", token, {
+      .cookie("x-token", token, {
         httpOnly: true,
         secure: true,
         sameSite: "none",
@@ -67,7 +67,7 @@ export const login = async (req, res) => {
 
     res
       .status(200)
-      .cookie("token", token, {
+      .cookie("x-token", token, {
         httpOnly: true,
         secure: true,
         sameSite: "none",
@@ -80,5 +80,8 @@ export const login = async (req, res) => {
 };
 
 export const logout = (req, res) => {
-  res.status(200).clearCookie("token").json({ message: "User logged out successfully" });
+  res
+    .status(200)
+    .clearCookie("x-token")
+    .json({ message: "User logged out successfully" });
 };
