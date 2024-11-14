@@ -24,9 +24,9 @@ app.use(
 
 // Routes
 // Auth Route
-app.use("/auth", authentication);
+app.use("/api/auth", authentication);
 // NFC Data Receiving Route
-app.use("/esp32", esp32);
+app.use("/api/esp32", esp32);
 
 // Test Route
 app.get("/", (req, res) => {
