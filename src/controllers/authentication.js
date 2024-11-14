@@ -12,6 +12,10 @@ export const register = async (req, res) => {
 
   const { name, lastName, email, password } = req.body;
 
+  if (name === "" || lastName === "" || email === "" || password === "") {
+    return res.status(400).json({ error: "Empty fields are not allowed" });
+  }
+
   try {
     const userExists = await User.findOne({ email });
 
@@ -49,6 +53,10 @@ export const login = async (req, res) => {
   }
 
   const { email, password } = req.body;
+
+  if (email === "" || password === "") {
+    return res.status(400).json({ error: "Empty fields are not allowed" });
+  }
 
   try {
     const user = await User.findOne({ email });
