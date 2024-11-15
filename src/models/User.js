@@ -8,6 +8,7 @@ const UserSchema = new mongoose.Schema({
   password: { type: String, required: true },
   uuidCard: { type: String, required: false, unique: true, default: null },
   position: { type: String, required: false, default: "none" },
+  department: { type: String, required: false, default: "none" },
   isPresent: { type: Boolean, required: true, default: false },
   role: { type: String, required: true, default: "user" },
   created_at: { type: Date, default: Date.now },
