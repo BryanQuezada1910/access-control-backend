@@ -22,16 +22,29 @@ app.use(
 // Routes
 // Auth Route
 app.use("/api/auth", (req, res, next) => {
-  import("./src/routes/authentication.js").then(module => {
-    module.default(req, res, next);
-  }).catch(next);
+  import("./src/routes/authentication.js")
+    .then((module) => {
+      module.default(req, res, next);
+    })
+    .catch(next);
 });
 
 // NFC Data Receiving Route
 app.use("/api/esp32", (req, res, next) => {
-  import("./src/routes/esp32.js").then(module => {
-    module.default(req, res, next);
-  }).catch(next);
+  import("./src/routes/esp32.js")
+    .then((module) => {
+      module.default(req, res, next);
+    })
+    .catch(next);
+});
+
+// Department Route
+app.use("/api/department", (req, res, next) => {
+  import("./src/routes/department.js")
+    .then((module) => {
+      module.default(req, res, next);
+    })
+    .catch(next);
 });
 
 // Test Route

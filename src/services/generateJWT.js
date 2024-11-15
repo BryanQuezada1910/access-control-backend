@@ -3,8 +3,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const SECRET_KEY = process.env.SECRET_KEY;
-
 export const generateAccessToken = (user) => {
     return jwt.sign(
         {
@@ -13,8 +11,10 @@ export const generateAccessToken = (user) => {
             lastName: user.lastName,
             email: user.email,
             role: user.role,
+            isPresent: user.isPresent,
+            position: user.position,
         },
-        SECRET_KEY,
+        process.env.JWT_SECRET,
         { expiresIn: "7d" }
     );
 };
