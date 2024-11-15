@@ -1,37 +1,9 @@
 import Deparment from "../models/Deparment.js";
-import jwt from "jsonwebtoken";
-// import User from "../models/User.js";
-
-const verifyTokenAndRole = (req, res, requiredRole) => {
-  const token = req.headers["x-token"];
-  if (!token) {
-    return {
-      authorized: false,
-      response: res.status(401).json({ error: "Unauthorized" }),
-    };
-  }
-
-  try {
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    if (decodedToken.role !== requiredRole) {
-      return {
-        authorized: false,
-        response: res.status(403).json({ error: "Forbidden" }),
-      };
-    }
-    return { authorized: true, user: decodedToken };
-  } catch (error) {
-    console.error("Token verification failed:", error);
-    return {
-      authorized: false,
-      response: res.status(401).json({ error: "Invalid Token" }),
-    };
-  }
-};
+import verifyTokenAndRole from "../utils/verifyTokenAndRole.js";
 
 export const createDepartment = async (req, res) => {
-  const { authorized, response } = verifyTokenAndRole(req, res, "admin");
-  if (!authorized) return response;
+  const { authorized, user } = verifyTokenAndRole(req, res, "admin");
+  if (!authorized) return;
 
   try {
     const { name, description } = req.body;
@@ -49,8 +21,8 @@ export const createDepartment = async (req, res) => {
 };
 
 export const getDepartments = async (req, res) => {
-  const { authorized, response } = verifyTokenAndRole(req, res, "admin");
-  if (!authorized) return response;
+  const { authorized, user } = verifyTokenAndRole(req, res, "admin");
+  if (!authorized) return;
 
   try {
     const departments = await Deparment.find();
@@ -62,8 +34,8 @@ export const getDepartments = async (req, res) => {
 };
 
 export const getDepartment = async (req, res) => {
-  const { authorized, response } = verifyTokenAndRole(req, res, "admin");
-  if (!authorized) return response;
+  const { authorized } = verifyTokenAndRole(req, res, "admin");
+  if (!authorized) return;
 
   try {
     const { id } = req.params;
@@ -79,8 +51,8 @@ export const getDepartment = async (req, res) => {
 };
 
 export const updateDepartment = async (req, res) => {
-  const { authorized, response } = verifyTokenAndRole(req, res, "admin");
-  if (!authorized) return response;
+  const { authorized } = verifyTokenAndRole(req, res, "admin");
+  if (!authorized) return;
 
   try {
     const { id } = req.params;
@@ -98,8 +70,8 @@ export const updateDepartment = async (req, res) => {
 };
 
 export const deleteDepartment = async (req, res) => {
-  const { authorized, response } = verifyTokenAndRole(req, res, "admin");
-  if (!authorized) return response;
+  const { authorized, user } = verifyTokenAndRole(req, res, "admin");
+  if (!authorized) return;
 
   try {
     const { id } = req.params;

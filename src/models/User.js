@@ -7,7 +7,7 @@ const UserSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   uuidCard: { type: String, required: false, unique: true, default: null },
-  position: { type: String, required: true },
+  position: { type: String, required: false, default: "none" },
   isPresent: { type: Boolean, required: true, default: false },
   role: { type: String, required: true, default: "user" },
   created_at: { type: Date, default: Date.now },

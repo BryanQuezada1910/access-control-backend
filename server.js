@@ -1,15 +1,18 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import connectDB from "./src/config/database.js";
 
 dotenv.config();
 
 const app = express();
 
+
 connectDB();
 
 // Middlewares
+app.use(cookieParser());
 app.use(express.json());
 app.use(
   cors({
