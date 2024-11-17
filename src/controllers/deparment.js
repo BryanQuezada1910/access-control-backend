@@ -2,7 +2,7 @@ import Deparment from "../models/Deparment.js";
 import verifyTokenAndRole from "../utils/verifyTokenAndRole.js";
 
 export const createDepartment = async (req, res) => {
-  const { authorized, user } = verifyTokenAndRole(req, res, "admin");
+  const { authorized } = verifyTokenAndRole(req, res, "admin");
   if (!authorized) return;
 
   try {
@@ -21,11 +21,14 @@ export const createDepartment = async (req, res) => {
 };
 
 export const getDepartments = async (req, res) => {
-  const { authorized, user } = verifyTokenAndRole(req, res, "admin");
+  const { authorized } = verifyTokenAndRole(req, res, "admin");
   if (!authorized) return;
 
   try {
     const departments = await Deparment.find();
+    if (departments.length === 0) {
+      return res.status(404).json({ error: "No departments found" });
+    }
     return res.status(200).json(departments);
   } catch (error) {
     console.error(error);
@@ -33,7 +36,7 @@ export const getDepartments = async (req, res) => {
   }
 };
 
-export const getDepartment = async (req, res) => {
+export const getDepartmentById = async (req, res) => {
   const { authorized } = verifyTokenAndRole(req, res, "admin");
   if (!authorized) return;
 
@@ -70,7 +73,7 @@ export const updateDepartment = async (req, res) => {
 };
 
 export const deleteDepartment = async (req, res) => {
-  const { authorized, user } = verifyTokenAndRole(req, res, "admin");
+  const { authorized } = verifyTokenAndRole(req, res, "admin");
   if (!authorized) return;
 
   try {

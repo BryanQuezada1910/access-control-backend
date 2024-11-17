@@ -2,7 +2,7 @@ import User from "../models/User.js";
 import verifyTokenAndRole from "../utils/verifyTokenAndRole.js";
 
 export const getUser = async (req, res) => {
-  const { authorized } = verifyTokenAndRole(req, res, "admin");
+  const { authorized } = verifyTokenAndRole(req, res, ["admin", "user"]);
   if (!authorized) return;
 
   try {

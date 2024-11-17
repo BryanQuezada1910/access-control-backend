@@ -1,11 +1,17 @@
 import { Router } from "express";
-import { createDepartment, getDepartments, getDepartment, updateDepartment, deleteDepartment } from "../controllers/deparment.js";
+import {
+  createDepartment,
+  getDepartments,
+  getDepartmentById,
+  updateDepartment,
+  deleteDepartment,
+} from "../controllers/deparment.js";
 
 const router = Router();
 
 router.post("/", createDepartment);
 router.get("/", getDepartments);
-router.get("/:id", getDepartment);
+router.get("/:id", getDepartmentById);
 router.put("/:id", updateDepartment);
 router.delete("/:id", deleteDepartment);
 
