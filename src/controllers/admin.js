@@ -18,6 +18,7 @@ const verifyTokenAndRole = (req, res, requiredRole) => {
         response: res.status(403).json({ error: "Forbidden" }),
       };
     }
+    console.log(`Decoded Token: ${decodedToken}`);
     return { authorized: true, user: decodedToken };
   } catch (error) {
     console.error("Token verification failed:", error);

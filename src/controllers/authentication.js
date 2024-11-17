@@ -1,6 +1,11 @@
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
-import { generateAccessToken, generateForgotPasswordToken } from "../services/generateJWT.js";
+import Admin from "../models/Admin.js";
+import {
+  generateAccessToken,
+  generateAdminToken,
+  generateForgotPasswordToken,
+} from "../services/generateJWT.js";
 import { EmailService } from "../services/sendEmails.js";
 
 export const register = async (req, res) => {
@@ -61,16 +66,33 @@ export const login = async (req, res) => {
   }
 
   try {
-    const user = await User.findOne({ email });
+    let user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      user = await Admin.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (!isPasswordCorrect) {
       return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    if (user.role === "admin") {
+      const adminToken = generateAdminToken(user);
+      //Delete the next line
+      console.log(`Admin Token: ${adminToken}`);
+      return res
+        .status(200)
+        .cookie("x-token", adminToken, {
+          httpOnly: true,
+          secure: true,
+          sameSite: "none",
+        })
+        .json({ message: "Admin logged in successfully" });
     }
 
     const token = generateAccessToken(user);

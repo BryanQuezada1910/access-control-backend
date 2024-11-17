@@ -19,6 +19,20 @@ export const generateAccessToken = (user) => {
   );
 };
 
+export const generateAdminToken = (user) => {
+  return jwt.sign(
+    {
+      id: user._id,
+      name: user.name,
+      lastName: user.lastName,
+      email: user.email,
+      role: user.role,
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" }
+  );
+};
+
 export const generateForgotPasswordToken = (user) => {
   return jwt.sign(
     {

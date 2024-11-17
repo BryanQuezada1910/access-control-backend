@@ -6,7 +6,11 @@ const UserSchema = new mongoose.Schema({
   lastName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  uuidCard: { type: String, required: false, unique: true, default: null },
+  uuidCard: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "NfcCard",
+    required: false,
+  },
   position: { type: String, required: false, default: "none" },
   department: { type: String, required: false, default: "none" },
   isPresent: { type: Boolean, required: true, default: false },
