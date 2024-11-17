@@ -3,7 +3,6 @@ import User from "../models/User.js";
 import Admin from "../models/Admin.js";
 import {
   generateAccessToken,
-  generateAdminToken,
   generateForgotPasswordToken,
 } from "../services/generateJWT.js";
 import { EmailService } from "../services/sendEmails.js";
@@ -83,9 +82,7 @@ export const login = async (req, res) => {
     }
 
     if (user.role === "admin") {
-      const adminToken = generateAdminToken(user);
-      //Delete the next line
-      console.log(`Admin Token: ${adminToken}`);
+      const adminToken = generateAccessToken(user);
       return res
         .status(200)
         .cookie("x-token", adminToken, {
