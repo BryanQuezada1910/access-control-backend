@@ -1,6 +1,9 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 
-const verifyTokenAndRole = (req, res, requiredRole) => {
+dotenv.config();
+
+const verifyToken = (req, res) => {
   const token = req.cookies["x-token"];
   if (!token) {
     console.error("No token provided");
@@ -12,14 +15,8 @@ const verifyTokenAndRole = (req, res, requiredRole) => {
 
   try {
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    if (decodedToken.role !== requiredRole) {
-      return {
-        authorized: false,
-        response: res.status(403).json({ error: "Forbidden" }),
-      };
-    }
-    console.log(`Decoded Token: ${decodedToken.role}`);
-    return { authorized: true, response: decodedToken };
+
+    return { authorized: true, decodedToken: decodedToken };
   } catch (error) {
     console.error("Token verification failed:", error);
     return {
@@ -29,4 +26,4 @@ const verifyTokenAndRole = (req, res, requiredRole) => {
   }
 };
 
-export default verifyTokenAndRole;
+export default verifyToken;

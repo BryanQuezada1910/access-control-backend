@@ -1,16 +1,27 @@
 import User from "../models/User.js";
 import verifyTokenAndRole from "../middlewares/verifyTokenAndRole.js";
+import verifyToken from "../middlewares/verifyToken.js";
 
-export const getUser = async (req, res) => {
-  const { authorized } = verifyTokenAndRole(req, res, ["admin", "user"]);
+export const getUserById = async (req, res) => {
+  const { authorized, decodedToken } = verifyToken(req, res);
   if (!authorized) return;
 
   try {
     const { id } = req.params;
     const user = await User.findById(id);
+
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
+
+    if (decodedToken.role === "admin") {
+      return res.status(200).json(user);
+    }
+
+    if (user._id != decodedToken.id) {
+      return res.status(403).json({ error: "Forbidden" });
+    }
+
     return res.status(200).json(user);
   } catch (error) {
     console.error(error);

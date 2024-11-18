@@ -28,3 +28,30 @@ export const createAdmin = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+export const getAdminById = async (req, res) => {
+  const { authorized, response } = verifyTokenAndRole(req, res, "admin");
+  if (!authorized) return;
+
+  try {
+    const { id } = req.params;
+    const admin = await Admin.findById(id);
+
+    if (!admin) {
+      return res.status(404).json({ error: "Admin not found" });
+    }
+
+    if (response.role === "admin") {
+      return res.status(200).json(admin);
+    }
+
+    if (admin._id != response._id || response.role !== "admin") {
+      return res.status(403).json({ error: "Forbidden" });
+    }
+
+    return res.status(200).json(admin);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+}
