@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { esp32RecieveData } from "../controllers/esp32Connection.js";
+import { esp32RecieveData } from "../controllers/esp32Data.js";
 
 const router = Router();
 

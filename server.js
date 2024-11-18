@@ -41,7 +41,7 @@ app.use("/api/auth", async (req, res, next) => {
 // NFC Data Receiving Route
 app.use("/api/esp32", async (req, res, next) => {
   try {
-    const module = await import("./src/routes/esp32.js");
+    const module = await import("./src/routes/esp32Data.js");
     module.default(req, res, next);
   } catch (error) {
     next(error);

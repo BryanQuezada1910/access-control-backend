@@ -1,5 +1,5 @@
 import Deparment from "../models/Deparment.js";
-import verifyTokenAndRole from "../utils/verifyTokenAndRole.js";
+import verifyTokenAndRole from "../middlewares/verifyTokenAndRole.js";
 
 export const createDepartment = async (req, res) => {
   const { authorized } = verifyTokenAndRole(req, res, "admin");

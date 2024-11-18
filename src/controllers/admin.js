@@ -1,6 +1,6 @@
 import Admin from "../models/Admin.js";
 import User from "../models/User.js";
-import verifyTokenAndRole from "../utils/verifyTokenAndRole.js";
+import verifyTokenAndRole from "../middlewares/verifyTokenAndRole.js";
 
 export const createAdmin = async (req, res) => {
   const { authorized, response } = verifyTokenAndRole(req, res, "admin");
