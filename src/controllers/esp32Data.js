@@ -1,3 +1,5 @@
+import { registerNfcCard } from "./nfcCard.js";
+
 const esp32RecieveData = (req, res) => {
   const data = req.body;
   console.log(data);
