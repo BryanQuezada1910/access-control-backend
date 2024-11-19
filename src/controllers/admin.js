@@ -61,7 +61,7 @@ export const addUserToDepartment = async (req, res) => {
   const { authorized, response } = verifyTokenAndRole(req, res, "admin");
   if (!authorized) return response;
 
-  if (!req.body || !("departmentId" in req.body) || !("userEmail" in req.body) || ("position" in req.body)) {
+  if (!req.body || !("departmentId" in req.body) || !("userEmail" in req.body) || !("position" in req.body)) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
