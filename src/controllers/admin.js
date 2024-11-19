@@ -84,7 +84,7 @@ export const addUserToDepartment = async (req, res) => {
       return res.status(404).json({ error: "Users not found" });
     }
 
-    if (department.employees.includes(userEmail)) {
+    if (department.employees.includes(user._id)) {
       return res.status(400).json({ error: "User already in department" });
     }
 
