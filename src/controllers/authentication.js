@@ -28,7 +28,13 @@ export const register = async (req, res) => {
       return res.status(400).json({ error: "Email already in use" });
     }
 
-    const newUser = new User({ name, lastName, email, password, NfcCard: null });
+    const newUser = new User({
+      name,
+      lastName,
+      email,
+      password,
+      NfcCard: null,
+    });
     await newUser.save();
 
     const token = generateAccessToken(newUser);
@@ -40,12 +46,7 @@ export const register = async (req, res) => {
 
     res
       .status(201)
-      .cookie("x-token", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-      })
-      .json({ message: "User registered successfully" });
+      .json({ message: "User registered successfully", token: token });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
     console.error(error);
@@ -85,24 +86,14 @@ export const login = async (req, res) => {
       const adminToken = generateAccessToken(user);
       return res
         .status(200)
-        .cookie("x-token", adminToken, {
-          httpOnly: true,
-          secure: true,
-          sameSite: "none",
-        })
-        .json({ message: "Admin logged in successfully" });
+        .json({ message: "Admin logged in successfully", token: adminToken });
     }
 
     const token = generateAccessToken(user);
 
     res
       .status(200)
-      .cookie("x-token", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-      })
-      .json({ message: "User logged in successfully" });
+      .json({ message: "User logged in successfully", token: token });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
     console.error(error);
@@ -144,6 +135,6 @@ export const forgotPassword = async (req, res) => {
 export const logout = (req, res) => {
   res
     .status(200)
-    .clearCookie("x-token")
+    .clearCookie("token")
     .json({ message: "User logged out successfully" });
 };

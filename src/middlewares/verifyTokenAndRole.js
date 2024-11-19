@@ -1,8 +1,9 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
 const verifyTokenAndRole = (req, res, requiredRole) => {
-  const token = req.cookies["x-token"];
-  if (!token) {
+  const authHeader = req.headers["authorization"];
+  console.log(`Token: ${authHeader}`);
+  if (!authHeader) {
     console.error("No token provided");
     return {
       authorized: false,
@@ -11,6 +12,16 @@ const verifyTokenAndRole = (req, res, requiredRole) => {
   }
 
   try {
+    const token = authHeader.split(" ")[1];
+
+    if (!token) {
+      console.error("No token provided");
+      return {
+        authorized: false,
+        response: res.status(401).json({ error: "Unauthorized" }),
+      };
+    }
+
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
     if (decodedToken.role !== requiredRole) {
       return {
