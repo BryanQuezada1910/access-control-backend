@@ -1,4 +1,4 @@
-import Deparment from "../models/Deparment.js";
+import Deparment from "../models/Department.js";
 import verifyTokenAndRole from "../middlewares/verifyTokenAndRole.js";
 
 export const createDepartment = async (req, res) => {

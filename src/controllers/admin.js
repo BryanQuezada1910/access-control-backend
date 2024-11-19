@@ -1,5 +1,6 @@
 import Admin from "../models/Admin.js";
 import User from "../models/User.js";
+import Department from "../models/Department.js";
 import verifyTokenAndRole from "../middlewares/verifyTokenAndRole.js";
 
 export const createAdmin = async (req, res) => {
@@ -54,4 +55,39 @@ export const getAdminById = async (req, res) => {
     console.error(error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};
+
+export const addUserToDepartment = async (req, res) => {
+  const { authorized, response } = verifyTokenAndRole(req, res, "admin");
+  if (!authorized) return response;
+
+  if (!req.body || !("departmentId" in req.body) || !("userId" in req.body)) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  try {
+    const { departmentId, userId } = req.body;
+    const department = await Department.findById(departmentId);
+
+    if (!department) {
+      return res.status(404).json({ error: "Department not found" });
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "Users not found" });
+    }
+
+    department.employees.push(userId);
+    await department.save();
+
+    user.department = department._id;
+    await user.save();
+
+    return res.status(200).json({ message: "Users added to department" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};

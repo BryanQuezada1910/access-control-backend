@@ -69,7 +69,7 @@ app.use("/api/user", async (req, res, next) => {
 });
 
 // Admin Route
-app.use("/api/auth/admin", async (req, res, next) => {
+app.use("/api/admin", async (req, res, next) => {
   try {
     const module = await import("./src/routes/admin.js");
     module.default(req, res, next);
