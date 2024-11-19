@@ -1,4 +1,4 @@
-import Deparment from "../models/Department.js";
+import Department from "../models/Department.js";
 import verifyTokenAndRole from "../middlewares/verifyTokenAndRole.js";
 
 export const createDepartment = async (req, res) => {
@@ -11,7 +11,7 @@ export const createDepartment = async (req, res) => {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    const newDepartment = new Deparment({ name, description });
+    const newDepartment = new Department({ name, description });
     await newDepartment.save();
     return res.status(201).json({ message: "Department created" });
   } catch (error) {
@@ -25,7 +25,7 @@ export const getDepartments = async (req, res) => {
   if (!authorized) return;
 
   try {
-    const departments = await Deparment.find();
+    const departments = await Department.find();
     if (departments.length === 0) {
       return res.status(404).json({ error: "No departments found" });
     }
@@ -42,7 +42,7 @@ export const getDepartmentById = async (req, res) => {
 
   try {
     const { id } = req.params;
-    const department = await Deparment.findById(id).populate({
+    const department = await Department.findById(id).populate({
       path: "employees",
       select: "-password"
     });
@@ -63,11 +63,11 @@ export const updateDepartment = async (req, res) => {
   try {
     const { id } = req.params;
     const { name, description } = req.body;
-    const department = await Deparment.findById(id);
+    const department = await Department.findById(id);
     if (!department) {
       return res.status(404).json({ error: "Department not found" });
     }
-    await Deparment.findByIdAndUpdate(id, { name, description });
+    await Department.findByIdAndUpdate(id, { name, description });
     return res.status(200).json({ message: "Department updated" });
   } catch (error) {
     console.error(error);
@@ -81,11 +81,11 @@ export const deleteDepartment = async (req, res) => {
 
   try {
     const { id } = req.params;
-    const department = await Deparment.findById(id);
+    const department = await Department.findById(id);
     if (!department) {
       return res.status(404).json({ error: "Department not found" });
     }
-    await Deparment.findByIdAndDelete(id);
+    await Department.findByIdAndDelete(id);
     return res.status(200).json({ message: "Department deleted" });
   } catch (error) {
     console.error(error);
