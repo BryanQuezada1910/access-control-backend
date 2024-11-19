@@ -61,14 +61,14 @@ export const addUserToDepartment = async (req, res) => {
   const { authorized, response } = verifyTokenAndRole(req, res, "admin");
   if (!authorized) return response;
 
-  if (!req.body || !("departmentId" in req.body) || !("userId" in req.body)) {
+  if (!req.body || !("departmentId" in req.body) || !("userEmail" in req.body) || ("position" in req.body)) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
   try {
-    const { departmentId, userId } = req.body;
+    const { departmentId, position, userEmail } = req.body;
     
-    if ((!departmentId || !userId) || departmentId === "" || userId === "") {
+    if ((!departmentId || !userEmail || !position) || ! departmentId === "" || userEmail === "" || position === "") {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
@@ -78,20 +78,21 @@ export const addUserToDepartment = async (req, res) => {
       return res.status(404).json({ error: "Department not found" });
     }
 
-    const user = await User.findById(userId);
+    const user = await User.findOne({ email: userEmail });
 
     if (!user) {
       return res.status(404).json({ error: "Users not found" });
     }
 
-    if (department.employees.includes(userId)) {
+    if (department.employees.includes(userEmail)) {
       return res.status(400).json({ error: "User already in department" });
     }
 
-    department.employees.push(userId);
+    department.employees.push(user._id);
     await department.save();
 
     user.department = department._id;
+    user.position = position;
     await user.save();
 
     return res.status(200).json({ message: "Users added to department" });
@@ -105,14 +106,14 @@ export const removeUserFromDepartment = async (req, res) => {
   const { authorized, response } = verifyTokenAndRole(req, res, "admin");
   if (!authorized) return response;
 
-  if (!req.body || !("departmentId" in req.body) || !("userId" in req.body)) {
+  if (!req.body || !("departmentId" in req.body) || !("userEmail" in req.body)) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
   try {
-    const { departmentId, userId } = req.body;
+    const { departmentId, userEmail } = req.body;
 
-    if ((!departmentId || !userId) || departmentId === "" || userId === "") {
+    if ((!departmentId || !userEmail) || departmentId === "" || userEmail === "") {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
@@ -122,22 +123,23 @@ export const removeUserFromDepartment = async (req, res) => {
       return res.status(404).json({ error: "Department not found" });
     }
 
-    const user = await User.findById(userId);
+    const user = await User.findById(userEmail);
 
     if (!user) {
       return res.status(404).json({ error: "Users not found" });
     }
 
-    if (!department.employees.includes(userId)) {
+    if (!department.employees.includes(userEmail)) {
       return res.status(404).json({ error: "User not found in department" });
     }
 
     department.employees = department.employees.filter(
-      (employee) => employee.toString() !== userId
+      (employee) => employee.toString() !== userEmail
     );
     await department.save();
 
     user.department = null;
+    user.position = "sin cargo";
     await user.save();
 
     return res.status(200).json({ message: "Users removed from department" });
