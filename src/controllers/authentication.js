@@ -28,12 +28,12 @@ export const register = async (req, res) => {
       return res.status(400).json({ error: "Email already in use" });
     }
 
-    const newUser = new User({ name, lastName, email, password });
+    const newUser = new User({ name, lastName, email, password, NfcCard: null });
     await newUser.save();
 
     const token = generateAccessToken(newUser);
 
-    if (process.env.NODE_ENV === "production") {
+    if (process.env.NODE_ENV === "development") {
       const emailService = new EmailService();
       await emailService.sendWelcomeEmail(email, name, lastName);
     }
