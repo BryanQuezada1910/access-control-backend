@@ -68,8 +68,8 @@ export const addUserToDepartment = async (req, res) => {
   try {
     const { departmentId, position, userEmail } = req.body;
     
-    if ((!departmentId || !userEmail || !position) || ! departmentId === "" || userEmail === "" || position === "") {
-      return res.status(400).json({ error: "Missing required fields" });
+    if (departmentId === "" || userEmail === "" || position === "") {
+      return res.status(400).json({ error: "Empty fields are not allowed" });
     }
 
     const department = await Department.findById(departmentId);
