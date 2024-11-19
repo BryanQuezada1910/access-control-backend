@@ -11,7 +11,7 @@ const UserSchema = new mongoose.Schema({
     ref: "NfcCard",
     required: false,
   },
-  position: { type: String, required: false, default: "none" },
+  position: { type: String, required: false, default: "sin cargo" },
   department: { type: mongoose.Schema.Types.ObjectId, ref: "Department" },
   isPresent: { type: Boolean, required: true, default: false },
   role: { type: String, required: true, default: "user" },
