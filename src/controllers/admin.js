@@ -67,6 +67,11 @@ export const addUserToDepartment = async (req, res) => {
 
   try {
     const { departmentId, userId } = req.body;
+    
+    if ((!departmentId || !userId) || departmentId === "" || userId === "") {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
     const department = await Department.findById(departmentId);
 
     if (!department) {
@@ -77,6 +82,10 @@ export const addUserToDepartment = async (req, res) => {
 
     if (!user) {
       return res.status(404).json({ error: "Users not found" });
+    }
+
+    if (department.employees.includes(userId)) {
+      return res.status(400).json({ error: "User already in department" });
     }
 
     department.employees.push(userId);
@@ -91,3 +100,49 @@ export const addUserToDepartment = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+export const removeUserFromDepartment = async (req, res) => {
+  const { authorized, response } = verifyTokenAndRole(req, res, "admin");
+  if (!authorized) return response;
+
+  if (!req.body || !("departmentId" in req.body) || !("userId" in req.body)) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  try {
+    const { departmentId, userId } = req.body;
+
+    if ((!departmentId || !userId) || departmentId === "" || userId === "") {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const department = await Department.findById(departmentId);
+
+    if (!department) {
+      return res.status(404).json({ error: "Department not found" });
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "Users not found" });
+    }
+
+    if (!department.employees.includes(userId)) {
+      return res.status(404).json({ error: "User not found in department" });
+    }
+
+    department.employees = department.employees.filter(
+      (employee) => employee.toString() !== userId
+    );
+    await department.save();
+
+    user.department = null;
+    await user.save();
+
+    return res.status(200).json({ message: "Users removed from department" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+}

@@ -12,7 +12,7 @@ const UserSchema = new mongoose.Schema({
     required: false,
   },
   position: { type: String, required: false, default: "none" },
-  department: { type: String, required: false, default: "none" },
+  department: { type: mongoose.Schema.Types.ObjectId, ref: "Department" },
   isPresent: { type: Boolean, required: true, default: false },
   role: { type: String, required: true, default: "user" },
   created_at: { type: Date, default: Date.now },
