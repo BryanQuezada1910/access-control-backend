@@ -58,6 +58,16 @@ app.use("/api/department", async (req, res, next) => {
   }
 });
 
+// NFC Card Route
+app.use("/api/nfcCard", async (req, res, next) => {
+  try {
+    const module = await import("./src/routes/nfcCard.js");
+    module.default(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
+
 // User Route
 app.use("/api/user", async (req, res, next) => {
   try {

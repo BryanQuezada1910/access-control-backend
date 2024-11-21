@@ -19,10 +19,14 @@ export const registerNfcCard = async (data) => {
   return { message: "NFC Card created", card: nfcCard };
 };
 
-export const assignNfcCard = async (req, res) => {
+export const assignNfcCardToUser = async (req, res) => {
   const { userId, cardId } = req.body;
   try {
     if (!userId || !cardId) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    if (userId === "" || cardId === "") {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
@@ -31,7 +35,7 @@ export const assignNfcCard = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const card = await NfcCard.findOne({ cardId });
+    const card = await NfcCard.findOne({ _id: cardId });
     if (!card) {
       return res.status(404).json({ message: "Card not found" });
     }
@@ -44,7 +48,7 @@ export const assignNfcCard = async (req, res) => {
       return res.status(400).json({ message: "Card already assigned" });
     }
 
-    user.nfcCard = cardId;
+    user.nfcCard = card._id;
     card.isAsigned = true;
     card.assignedTo = userId;
     await user.save();
