@@ -15,15 +15,32 @@ export const esp32RecieveData = async (req, res) => {
     }
 
     const cardExists = await NfcCard.findOne({ cardId: uid });
-    const user = await User.findOne({ nfcCard: uid });
+
+    if (!cardExists) {
+      const result = await registerNfcCard(data);
+      if (!result.card) {
+        return res.status(500).json({ message: "Server Error" });
+      }
+      return res
+        .status(201)
+        .json({ message: "Card registered successfully", card: result.card });
+    }
+
+    if (!cardExists.isAsigned) {
+      return res.status(400).json({ message: "The card is not assigned" });
+    }
+
+    const user = await User.findOne({ nfcCard: cardExists._id });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
     if (cardExists && cardExists.isAsigned && ioInstance && user) {
-      const populatedCard = await cardExists
-        .populate({
-          path: "assignedTo",
-          select: "-password",
-        })
-        .execPopulate();
+      const populatedCard = await cardExists.populate({
+        path: "assignedTo",
+        select: "-password",
+      });
 
       if (!user.isPresent) {
         const newAttendance = new Attendance({
@@ -37,7 +54,7 @@ export const esp32RecieveData = async (req, res) => {
         ioInstance.emit("assistance", { user, type: "checkIn" });
       } else {
         const attendanceRecord = await Attendance.findOne({
-          userId: populatedCard.assignedTo._id,
+          userId: user._id,
           checkOut: null,
         });
 
@@ -52,11 +69,9 @@ export const esp32RecieveData = async (req, res) => {
       }
     }
 
-    const result = await registerNfcCard(data);
-    console.log(result);
-    res.status(200).json(result);
+    res.status(200).json({ message: "Data processed successfully" });
   } catch (error) {
-    console.error(error.message || error);
+    console.error("Error en esp32: " + error.message || error);
     res.status(500).json({ message: error.message || "Server Error" });
   }
 };

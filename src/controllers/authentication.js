@@ -39,7 +39,7 @@ export const register = async (req, res) => {
 
     const token = generateAccessToken(newUser);
 
-    if (process.env.NODE_ENV === "development") {
+    if (process.env.NODE_ENV === "production") {
       const emailService = new EmailService();
       await emailService.sendWelcomeEmail(email, name, lastName);
     }
