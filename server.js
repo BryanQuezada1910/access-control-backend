@@ -1,7 +1,7 @@
 import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import socketHandler from "./src/services/wsHandler.js";
+import { socketHandler } from "./src/services/wsHandler.js";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";

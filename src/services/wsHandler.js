@@ -1,8 +1,10 @@
 // Import models
 
 // The socketHandler allows real-time communication for the access control system
+let ioInstance;
 
-export default (io) => {
+const socketHandler = (io) => {
+  ioInstance = io;
   io.on("connection", (socket) => {
     console.log("New user connected");
 
@@ -11,3 +13,5 @@ export default (io) => {
     });
   });
 };
+
+export { socketHandler, ioInstance };
