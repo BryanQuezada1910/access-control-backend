@@ -2,7 +2,6 @@ import jwt from "jsonwebtoken";
 
 const verifyTokenAndRole = (req, res, requiredRole) => {
   const authHeader = req.headers["authorization"];
-  console.log(`Token: ${authHeader}`);
   if (!authHeader) {
     console.error("No token provided");
     return {
@@ -29,7 +28,6 @@ const verifyTokenAndRole = (req, res, requiredRole) => {
         response: res.status(403).json({ error: "Forbidden" }),
       };
     }
-    console.log(`Decoded Token: ${decodedToken.role}`);
     return { authorized: true, response: decodedToken };
   } catch (error) {
     console.error("Token verification failed:", error);
