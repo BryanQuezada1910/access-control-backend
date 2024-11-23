@@ -8,7 +8,15 @@ export const getUserById = async (req, res) => {
 
   try {
     const { id } = req.params;
-    const user = await User.findById(id);
+
+    if (!id) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const user = await User.findById(id).select("-password").populate({
+      path: "department",
+      select: "name",
+    });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -29,12 +37,26 @@ export const getUserById = async (req, res) => {
   }
 };
 
+export const getUserWithoutNfcCard = async (req, res) => {
+  const { authorized } = verifyTokenAndRole(req, res, "admin");
+  if (!authorized) return;
+
+  try {
+    const users = await User.find({ haveNfcCard: false }).select("-password");
+    return res.status(200).json(users);
+  } catch (error) {
+    console.log("getUserWithoutNfcCard -> error!!!!!!!!");
+    console.error(error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 export const getUsers = async (req, res) => {
   const { authorized } = verifyTokenAndRole(req, res, "admin");
   if (!authorized) return;
 
   try {
-    const users = await User.find();
+    const users = await User.find().select("-password");
     return res.status(200).json(users);
   } catch (error) {
     console.error(error);

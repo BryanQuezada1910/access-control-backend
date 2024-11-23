@@ -9,7 +9,10 @@ const UserSchema = new mongoose.Schema({
   nfcCard: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "NfcCard",
+    required: false,
+    default: null,
   },
+  haveNfcCard: { type: Boolean, required: true, default: false },
   position: { type: String, required: false, default: "sin cargo" },
   department: { type: mongoose.Schema.Types.ObjectId, ref: "Department" },
   isPresent: { type: Boolean, required: true, default: false },

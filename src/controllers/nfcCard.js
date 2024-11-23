@@ -19,6 +19,27 @@ export const registerNfcCard = async (data) => {
   return { message: "NFC Card created", card: nfcCard };
 };
 
+// This controller is not used in the project
+export const getNfcCards = async (req, res) => {
+  try {
+    const cards = await NfcCard.find();
+    res.status(200).json(cards);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+export const getUnassignedNfcCards = async (req, res) => {
+  try {
+    const unassignedCards = await NfcCard.find({ isAsigned: false });
+    res.status(200).json(unassignedCards);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
 export const assignNfcCardToUser = async (req, res) => {
   const { userId, cardId } = req.body;
   try {
@@ -49,6 +70,7 @@ export const assignNfcCardToUser = async (req, res) => {
     }
 
     user.nfcCard = card._id;
+    user.haveNfcCard = true;
     card.isAsigned = true;
     card.assignedTo = userId;
     await user.save();
