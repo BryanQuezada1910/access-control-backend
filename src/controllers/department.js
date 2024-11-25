@@ -13,7 +13,7 @@ export const createDepartment = async (req, res) => {
 
     const newDepartment = new Department({ name, description });
     await newDepartment.save();
-    return res.status(201).json({ message: "Department created" });
+    return res.status(201).json(newDepartment);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Internal Server Error" });
@@ -44,7 +44,7 @@ export const getDepartmentById = async (req, res) => {
     const { id } = req.params;
     const department = await Department.findById(id).populate({
       path: "employees",
-      select: "-password"
+      select: "-password",
     });
     if (!department) {
       return res.status(404).json({ error: "Department not found" });

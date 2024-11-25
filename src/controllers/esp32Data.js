@@ -27,6 +27,7 @@ export const esp32RecieveData = async (req, res) => {
     }
 
     if (!cardExists.isAsigned) {
+      ioInstance.emit("unassignedCard", { card: cardExists });
       return res.status(400).json({ message: "The card is not assigned" });
     }
 
@@ -51,7 +52,7 @@ export const esp32RecieveData = async (req, res) => {
         await user.save();
         await newAttendance.save();
 
-        ioInstance.emit("assistance", { user, type: "checkIn" });
+        ioInstance.emit("assistance", { user, card: cardExists, type: "checkIn" });
       } else {
         const attendanceRecord = await Attendance.findOne({
           userId: user._id,

@@ -42,10 +42,14 @@ export const getUserWithoutNfcCard = async (req, res) => {
   if (!authorized) return;
 
   try {
-    const users = await User.find({ haveNfcCard: false }).select("-password");
+    const users = await User.find({ haveNfcCard: false })
+      .select("-password")
+      .populate({
+        path: "department",
+        select: "name",
+      });
     return res.status(200).json(users);
   } catch (error) {
-    console.log("getUserWithoutNfcCard -> error!!!!!!!!");
     console.error(error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
@@ -56,7 +60,10 @@ export const getUsers = async (req, res) => {
   if (!authorized) return;
 
   try {
-    const users = await User.find().select("-password");
+    const users = await User.find().select("-password").populate({
+      path: "department",
+      select: "name",
+    });
     return res.status(200).json(users);
   } catch (error) {
     console.error(error);

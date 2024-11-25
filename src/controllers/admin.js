@@ -61,13 +61,18 @@ export const addUserToDepartment = async (req, res) => {
   const { authorized, response } = verifyTokenAndRole(req, res, "admin");
   if (!authorized) return response;
 
-  if (!req.body || !("departmentId" in req.body) || !("userEmail" in req.body) || !("position" in req.body)) {
+  if (
+    !req.body ||
+    !("departmentId" in req.body) ||
+    !("userEmail" in req.body) ||
+    !("position" in req.body)
+  ) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
   try {
     const { departmentId, position, userEmail } = req.body;
-    
+
     if (departmentId === "" || userEmail === "" || position === "") {
       return res.status(400).json({ error: "Empty fields are not allowed" });
     }
@@ -84,7 +89,7 @@ export const addUserToDepartment = async (req, res) => {
       return res.status(404).json({ error: "Users not found" });
     }
 
-    if (department.employees.includes(user._id)) {
+    if (department.employees.includes(user._id) || user.department) {
       return res.status(400).json({ error: "User already in department" });
     }
 
@@ -106,14 +111,23 @@ export const removeUserFromDepartment = async (req, res) => {
   const { authorized, response } = verifyTokenAndRole(req, res, "admin");
   if (!authorized) return response;
 
-  if (!req.body || !("departmentId" in req.body) || !("userEmail" in req.body)) {
+  if (
+    !req.body ||
+    !("departmentId" in req.body) ||
+    !("userEmail" in req.body)
+  ) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
   try {
     const { departmentId, userEmail } = req.body;
 
-    if ((!departmentId || !userEmail) || departmentId === "" || userEmail === "") {
+    if (
+      !departmentId ||
+      !userEmail ||
+      departmentId === "" ||
+      userEmail === ""
+    ) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
@@ -147,4 +161,4 @@ export const removeUserFromDepartment = async (req, res) => {
     console.error(error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};
