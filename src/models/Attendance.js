@@ -22,8 +22,7 @@ const AttendanceSchema = new mongoose.Schema({
         required: false,
         validate: {
           validator: function (value) {
-            // Si checkOut existe, debe ser después de checkIn
-            return !this.checkIn || value >= this.checkIn;
+            return !value || value >= this.checkIn;
           },
           message: "checkOut must be after checkIn",
         },
