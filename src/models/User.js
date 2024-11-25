@@ -16,7 +16,7 @@ const UserSchema = new mongoose.Schema({
   password: { type: String, required: true },
   nfcCard: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "NfcCard",
+    ref: "nfccard",
     required: false,
     default: null,
   },
@@ -24,7 +24,7 @@ const UserSchema = new mongoose.Schema({
   position: { type: String, required: false, default: "sin cargo" },
   department: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Department",
+    ref: "department",
     required: false,
     default: null,
   },
@@ -43,4 +43,4 @@ UserSchema.pre("save", async function (next) {
   next();
 });
 
-export default mongoose.model("User", UserSchema);
+export default mongoose.model("user", UserSchema);

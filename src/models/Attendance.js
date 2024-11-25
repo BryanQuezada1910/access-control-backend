@@ -3,14 +3,14 @@ import mongoose from "mongoose";
 const AttendanceSchema = new mongoose.Schema({
   departmentId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Department",
+    ref: "department",
     required: true,
   },
   attendances: [
     {
       userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "user",
         required: true,
       },
       checkIn: {
@@ -36,4 +36,4 @@ const AttendanceSchema = new mongoose.Schema({
   ],
 });
 
-export default mongoose.model("Attendance", AttendanceSchema);
+export default mongoose.model("attendance", AttendanceSchema);

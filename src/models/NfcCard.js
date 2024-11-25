@@ -5,11 +5,11 @@ const NfcCardSchema = new mongoose.Schema({
   isAsigned: { type: Boolean, default: false },
   assignedTo: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "user",
     required: false,
     default: null,
   },
   created_at: { type: Date, default: Date.now },
 });
 
-export default mongoose.model("NfcCard", NfcCardSchema);
+export default mongoose.model("nfccard", NfcCardSchema);

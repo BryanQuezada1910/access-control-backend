@@ -7,11 +7,23 @@ export const createDepartment = async (req, res) => {
 
   try {
     const { name, description } = req.body;
+
     if (!name || !description) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    const newDepartment = new Department({ name, description });
+    const departmentExists = await Department.findOne({
+      name,
+    });
+
+    if (departmentExists) {
+      return res.status(400).json({ error: "Department already exists" });
+    }
+
+    const newDepartment = new Department({
+      name,
+      description,
+    });
     await newDepartment.save();
     return res.status(201).json(newDepartment);
   } catch (error) {
