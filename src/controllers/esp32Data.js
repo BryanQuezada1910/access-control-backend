@@ -40,7 +40,7 @@ export const esp32RecieveData = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const attendance = await handleAttendance(user, card);
+    const attendance = await handleAttendance(user, card, req, res);
 
     res.status(200).json({
       message: "Data processed successfully",
@@ -52,7 +52,7 @@ export const esp32RecieveData = async (req, res) => {
   }
 };
 
-const handleAttendance = async (user, card) => {
+const handleAttendance = async (user, card, req, res) => {
   const departmentId = user.department._id;
   const userId = user._id;
 
@@ -80,7 +80,7 @@ const handleAttendance = async (user, card) => {
       type: "checkIn",
     });
 
-    return attendanceRecord;
+    return res.status(200).json({ message: "autorizado" });
   } else {
     // Registro de salida (checkOut)
     const lastAttendance = attendanceRecord.attendances
@@ -99,7 +99,7 @@ const handleAttendance = async (user, card) => {
         type: "checkOut",
       });
 
-      return attendanceRecord;
+      return res.status(200).json({ message: "autorizado" });
     } else {
       throw new Error("No valid check-in found for this user.");
     }
