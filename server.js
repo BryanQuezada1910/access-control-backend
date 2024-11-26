@@ -68,6 +68,16 @@ app.use("/api/nfcCard", async (req, res, next) => {
   }
 });
 
+// Attendance Route
+app.use("/api/attendance", async (req, res, next) => {
+  try {
+    const module = await import("./src/routes/attendance.js");
+    module.default(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
+
 // User Route
 app.use("/api/user", async (req, res, next) => {
   try {
@@ -98,5 +108,7 @@ socketHandler(io);
 
 const PORT = process.env.PORT || 3000;
 httpServer.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(
+    `Server running on port ${PORT}\nNODE_ENV=${process.env.NODE_ENV}\n`
+  );
 });

@@ -60,10 +60,16 @@ export const getUsers = async (req, res) => {
   if (!authorized) return;
 
   try {
-    const users = await User.find().select("-password").populate({
-      path: "department",
-      select: "name",
-    });
+    const users = await User.find()
+      .select("-password")
+      .populate({
+        path: "department",
+        select: "name",
+      })
+      .populate({
+        path: "nfcCard",
+        select: "cardId",
+      });
     return res.status(200).json(users);
   } catch (error) {
     console.error(error);

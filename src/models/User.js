@@ -21,7 +21,7 @@ const UserSchema = new mongoose.Schema({
     default: null,
   },
   haveNfcCard: { type: Boolean, required: true, default: false },
-  position: { type: String, required: false, default: "sin cargo" },
+  position: { type: String, required: false, default: "Sin cargo" },
   department: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "department",

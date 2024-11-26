@@ -7,8 +7,6 @@ import User from "../models/User.js";
 export const esp32RecieveData = async (req, res) => {
   const data = req.body;
   const { uid } = data;
-  console.log("Data received from ESP32:" + data);
-  console.log("UID:" + uid);
 
   try {
     if (!uid) {
