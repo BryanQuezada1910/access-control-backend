@@ -46,7 +46,7 @@ export const getUserWithoutNfcCard = async (req, res) => {
       .select("-password")
       .populate({
         path: "department",
-        select: "name",
+        // select: "name",
       });
     return res.status(200).json(users);
   } catch (error) {
