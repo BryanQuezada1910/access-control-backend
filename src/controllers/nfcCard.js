@@ -22,7 +22,7 @@ export const registerNfcCard = async (data) => {
 // This controller is not used in the project
 export const getNfcCards = async (req, res) => {
   try {
-    const cards = await NfcCard.find();
+    const cards = await NfcCard.find().populate("assignedTo", "name email");
     res.status(200).json(cards);
   } catch (error) {
     console.log(error);
