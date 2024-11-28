@@ -50,12 +50,9 @@ export const getAttendancesByDateRange = async (req, res) => {
     let end = new Date(`${endDate}T23:59:59.999`);
 
     // Ajustar las fechas en UTC compensando la zona horaria
-    start.setHours(start.getHours() + 6);
-    end.setHours(end.getHours() + 6);
-
     if (process.env.NODE_ENV === "production") {
-      start = new Date(`${startDate}T00:00:00`);
-      end = new Date(`${endDate}T23:59:59.999`);
+      start.setHours(start.getHours() + 6);
+      end.setHours(end.getHours() + 6);
     }
 
     const attendances = await Attendance.find({
@@ -103,14 +100,11 @@ export const getAttendanceByDepartmentAndDateRange = async (req, res) => {
     let end = new Date(`${endDate}T23:59:59.999`);
 
     // Ajustar las fechas en UTC compensando la zona horaria
-    start.setHours(start.getHours() + 6);
-    end.setHours(end.getHours() + 6);
-
     if (process.env.NODE_ENV === "production") {
-      start = new Date(`${startDate}T00:00:00`);
-      end = new Date(`${endDate}T23:59:59.999`);
+      start.setHours(start.getHours() + 6);
+      end.setHours(end.getHours() + 6);
     }
-    
+
     const attendance = await Attendance.findOne({
       departmentId,
       "attendances.checkIn": { $gte: start, $lte: end },
