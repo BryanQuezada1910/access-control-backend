@@ -50,10 +50,10 @@ export const getAttendancesByDateRange = async (req, res) => {
     let end = new Date(`${endDate}T23:59:59.999`);
 
     // Ajustar las fechas en UTC compensando la zona horaria
-    start = new Date(start.getTime() + 6 * 60 * 60 * 1000); // Sumar 6 horas
-    end = new Date(end.getTime() + 6 * 60 * 60 * 1000); // Sumar 6 horas
+    start.setHours(start.getHours() + 6);
+    end.setHours(end.getHours() + 6);
 
-    if (process.env.NODE_ENV === "development") {
+    if (process.env.NODE_ENV === "production") {
       start = new Date(`${startDate}T00:00:00`);
       end = new Date(`${endDate}T23:59:59.999`);
     }
@@ -99,18 +99,18 @@ export const getAttendanceByDepartmentAndDateRange = async (req, res) => {
   }
 
   try {
-    // Convierte la fecha de inicio y fin a UTC
     let start = new Date(`${startDate}T00:00:00`);
     let end = new Date(`${endDate}T23:59:59.999`);
 
     // Ajustar las fechas en UTC compensando la zona horaria
-    start = new Date(start.getTime() + 6 * 60 * 60 * 1000); // Sumar 6 horas
-    end = new Date(end.getTime() + 6 * 60 * 60 * 1000); // Sumar 6 horas
+    start.setHours(start.getHours() + 6);
+    end.setHours(end.getHours() + 6);
 
-    if (process.env.NODE_ENV === "development") {
+    if (process.env.NODE_ENV === "production") {
       start = new Date(`${startDate}T00:00:00`);
       end = new Date(`${endDate}T23:59:59.999`);
     }
+    
     const attendance = await Attendance.findOne({
       departmentId,
       "attendances.checkIn": { $gte: start, $lte: end },
