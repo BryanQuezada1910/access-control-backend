@@ -46,9 +46,14 @@ export const getAttendancesByDateRange = async (req, res) => {
   }
 
   try {
-    // Convertir las fechas en objetos Date
-    let start = new Date(`${startDate}T00:00:00`);
-    let end = new Date(`${endDate}T23:59:59.999`);
+    // Convierte la fecha de inicio y fin a UTC
+    let start = new Date(`${startDate}T00:00:00-06:00`).toISOString();
+    let end = new Date(`${endDate}T23:59:59.999-06:00`).toISOString();
+
+    if (process.env.NODE_ENV === "development") {
+      start = new Date(`${startDate}T00:00:00`);
+      end = new Date(`${endDate}T23:59:59.999`);
+    }
 
     const attendances = await Attendance.find({
       "attendances.checkIn": { $gte: start, $lte: end },
@@ -91,9 +96,14 @@ export const getAttendanceByDepartmentAndDateRange = async (req, res) => {
   }
 
   try {
-    let start = new Date(`${startDate}T00:00:00`);
-    let end = new Date(`${endDate}T23:59:59.999`);
+    // Convierte la fecha de inicio y fin a UTC
+    let start = new Date(`${startDate}T00:00:00-06:00`).toISOString();
+    let end = new Date(`${endDate}T23:59:59.999-06:00`).toISOString();
 
+    if (process.env.NODE_ENV === "development") {
+      start = new Date(`${startDate}T00:00:00`);
+      end = new Date(`${endDate}T23:59:59.999`);
+    }
     const attendance = await Attendance.findOne({
       departmentId,
       "attendances.checkIn": { $gte: start, $lte: end },
