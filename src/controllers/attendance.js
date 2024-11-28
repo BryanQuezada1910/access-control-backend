@@ -46,9 +46,12 @@ export const getAttendancesByDateRange = async (req, res) => {
   }
 
   try {
-    // Convierte la fecha de inicio y fin a UTC
-    let start = new Date(`${startDate}T00:00:00`).toISOString();
-    let end = new Date(`${endDate}T23:59:59.999`).toISOString();
+    let start = new Date(`${startDate}T00:00:00`);
+    let end = new Date(`${endDate}T23:59:59.999`);
+
+    // Ajustar las fechas en UTC compensando la zona horaria
+    start = new Date(start.getTime() + 6 * 60 * 60 * 1000); // Sumar 6 horas
+    end = new Date(end.getTime() + 6 * 60 * 60 * 1000); // Sumar 6 horas
 
     if (process.env.NODE_ENV === "development") {
       start = new Date(`${startDate}T00:00:00`);
@@ -97,8 +100,12 @@ export const getAttendanceByDepartmentAndDateRange = async (req, res) => {
 
   try {
     // Convierte la fecha de inicio y fin a UTC
-    let start = new Date(`${startDate}T00:00:00`).toISOString();
-    let end = new Date(`${endDate}T23:59:59.999`).toISOString();
+    let start = new Date(`${startDate}T00:00:00`);
+    let end = new Date(`${endDate}T23:59:59.999`);
+
+    // Ajustar las fechas en UTC compensando la zona horaria
+    start = new Date(start.getTime() + 6 * 60 * 60 * 1000); // Sumar 6 horas
+    end = new Date(end.getTime() + 6 * 60 * 60 * 1000); // Sumar 6 horas
 
     if (process.env.NODE_ENV === "development") {
       start = new Date(`${startDate}T00:00:00`);
