@@ -43,4 +43,26 @@ export class EmailService {
       console.error("Error rendering or sending welcome email:", error);
     }
   }
+
+  async sendAssignDepartmentEmail(to, name, lastName, department, position) {
+    try {
+      const template = path.join(
+        __dirname,
+        "../templates/emails/assignDepartment.html"
+      );
+      const html = await renderTemplate(template, {
+        name,
+        lastName,
+        department,
+        position,
+      });
+      const subject = "Departamento asignado";
+      await this.sendEmail(to, subject, html);
+    } catch (error) {
+      console.error(
+        "Error rendering or sending assign department email:",
+        error
+      );
+    }
+  }
 }

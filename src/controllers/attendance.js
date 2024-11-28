@@ -91,9 +91,8 @@ export const getAttendanceByDepartmentAndDateRange = async (req, res) => {
   }
 
   try {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    end.setHours(23, 59, 59, 999);
+    let start = new Date(`${startDate}T00:00:00`);
+    let end = new Date(`${endDate}T23:59:59.999`);
 
     const attendance = await Attendance.findOne({
       departmentId,
@@ -102,6 +101,13 @@ export const getAttendanceByDepartmentAndDateRange = async (req, res) => {
       path: "attendances.userId",
       select: "-password",
     });
+
+    if (!attendance) {
+      return res.status(404).json({
+        message:
+          "No attendances found in the given date range for this department",
+      });
+    }
 
     res.status(200).json(attendance || { message: "No attendances found" });
   } catch (error) {

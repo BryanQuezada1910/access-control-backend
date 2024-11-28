@@ -2,6 +2,7 @@ import Admin from "../models/Admin.js";
 import User from "../models/User.js";
 import Department from "../models/Department.js";
 import verifyTokenAndRole from "../middlewares/verifyTokenAndRole.js";
+import { EmailService } from "../services/sendEmails.js";
 
 export const createAdmin = async (req, res) => {
   const { authorized, response } = verifyTokenAndRole(req, res, "admin");
@@ -99,6 +100,17 @@ export const addUserToDepartment = async (req, res) => {
     user.department = department._id;
     user.position = position;
     await user.save();
+
+    if (process.env.NODE_ENV === "production") {
+      const emailService = new EmailService();
+      await emailService.sendAssignDepartmentEmail(
+        user.email,
+        user.name,
+        user.lastName,
+        department.name,
+        position
+      );
+    }
 
     return res.status(200).json({ message: "Users added to department" });
   } catch (error) {
