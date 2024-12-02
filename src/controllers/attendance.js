@@ -7,13 +7,17 @@ export const getAllAttendances = async (req, res) => {
   if (!authorized) return;
 
   try {
-    const attendances = await Attendance.find().populate({
+    const departments = await Attendance.find().populate({
       path: "attendances.userId",
       select: "-password",
     });
-    res.status(200).json(attendances);
+
+    const allAttendances = departments.flatMap((doc) => doc.attendances);
+
+    res.status(200).json(allAttendances);
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    console.error("Error fetching all attendances:", error.message);
+    res.status(500).json({ message: "Error fetching all attendances" });
   }
 };
 
