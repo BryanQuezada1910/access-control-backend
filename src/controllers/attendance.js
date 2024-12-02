@@ -143,14 +143,27 @@ export const getAttendanceByUser = async (req, res) => {
       select: "-password",
     });
 
-    if (attendances.length === 0) {
+    if (!attendances || attendances.length === 0) {
       return res
         .status(404)
         .json({ message: "No attendances found for this user" });
     }
 
-    res.status(200).json(attendances);
+    const userAttendances = attendances.flatMap((doc) =>
+      doc.attendances.filter(
+        (attendance) => attendance.userId._id.toString() === userId
+      )
+    );
+
+    if (userAttendances.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No attendances found for this user" });
+    }
+
+    res.status(200).json(userAttendances);
   } catch (error) {
+    console.error("Error fetching user attendance:", error.message);
     res.status(500).json({
       message: "Error fetching user attendance",
       error: error.message,
