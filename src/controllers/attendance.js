@@ -1,5 +1,6 @@
 import Attendance from "../models/Attendance.js";
 import verifyTokenAndRole from "../middlewares/verifyTokenAndRole.js";
+import verifyToken from "../middlewares/verifyToken.js";
 
 export const getAllAttendances = async (req, res) => {
   const { authorized } = verifyTokenAndRole(req, res, "admin");
@@ -129,7 +130,7 @@ export const getAttendanceByDepartmentAndDateRange = async (req, res) => {
 };
 
 export const getAttendanceByUser = async (req, res) => {
-  const { authorized } = verifyTokenAndRole(req, res, "admin");
+  const { authorized } = verifyToken(req, res);
   if (!authorized) return;
 
   const { userId } = req.params;
