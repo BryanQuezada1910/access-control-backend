@@ -10,7 +10,7 @@ import connectDB from "./src/config/database.js";
 dotenv.config();
 
 const corsOptions = {
-  origin: [process.env.FRONTEND_URL, "http://localhost:9000"],
+  origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 };
