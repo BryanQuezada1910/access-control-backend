@@ -10,7 +10,7 @@ import connectDB from "./src/config/database.js";
 dotenv.config();
 
 const corsOptions = {
-  origin: [process.env.FRONTEND_URL, "http://localhost:9000"],
+  origin: ["*"], // process.env.FRONTEND_URL, "http://localhost:9000"
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 };
@@ -96,6 +96,15 @@ app.use("/api/admin", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+});
+
+// Endpoint para recibir datos de la app expo ITNegocios
+app.post('/api/receive-data', (req, res) => {
+  console.log('Datos recibidos:');
+  console.log(req.body); // Muestra los datos enviados por la app
+
+  // Enviar respuesta al cliente
+  res.status(200).json({ message: 'Datos recibidos correctamente' });
 });
 
 // Test Route
