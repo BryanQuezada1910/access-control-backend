@@ -99,12 +99,13 @@ app.use("/api/admin", async (req, res, next) => {
 });
 
 // Endpoint para recibir datos de la app expo ITNegocios
-app.post('/api/receive-data', (req, res) => {
-  console.log('Datos recibidos:');
-  console.log(req.body); // Muestra los datos enviados por la app
-
-  // Enviar respuesta al cliente
-  res.status(200).json({ message: 'Datos recibidos correctamente' });
+app.use("/api", async (req, res, next) => {
+  try {
+    const module = await import("./src/routes/bgLocation.js");
+    module.default(req, res, next);
+  } catch (error) {
+    next(error);
+  }
 });
 
 // Test Route
