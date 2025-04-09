@@ -48,3 +48,97 @@ YouAccess es un sistema integral de control de acceso que gestiona la asistencia
 ```bash
 git clone https://github.com/tuusuario/access-control-backend.git
 cd access-control-backend
+
+```
+2. Instalar dependencias:
+```bash
+npm install
+```
+
+3. Configurar variables de entorno:
+```bash
+cp .env.example .env
+```
+Edita el archivo `.env` con tus valores de configuración.
+
+4. Iniciar el servidor:
+```bash
+# Modo desarrollo
+npm run dev
+
+# Modo producción
+npm start
+```
+
+## Estructura del Proyecto
+
+```
+├── config/             # Configuraciones de la aplicación
+├── controllers/        # Controladores
+├── middleware/         # Middlewares personalizados
+├── models/             # Modelos de datos
+├── routes/             # Rutas de la API
+├── services/           # Servicios de negocio
+├── utils/              # Utilidades
+├── websocket/          # Configuración de Socket.IO
+├── app.js              # Punto de entrada de la aplicación
+└── package.json        # Dependencias y scripts
+```
+
+## API Endpoints
+
+### Autenticación
+- `POST /api/auth/register` - Registro de usuario
+- `POST /api/auth/login` - Inicio de sesión
+- `GET /api/auth/profile` - Obtener perfil de usuario
+
+### Usuarios
+- `GET /api/users` - Obtener todos los usuarios
+- `GET /api/users/:id` - Obtener usuario por ID
+- `PUT /api/users/:id` - Actualizar usuario
+- `DELETE /api/users/:id` - Eliminar usuario
+
+### Tarjetas NFC
+- `POST /api/cards` - Registrar nueva tarjeta
+- `GET /api/cards` - Obtener todas las tarjetas
+- `PUT /api/cards/:id` - Asignar tarjeta a usuario
+- `DELETE /api/cards/:id` - Eliminar tarjeta
+
+### Departamentos
+- `POST /api/departments` - Crear departamento
+- `GET /api/departments` - Listar departamentos
+- `PUT /api/departments/:id` - Actualizar departamento
+- `DELETE /api/departments/:id` - Eliminar departamento
+
+### Asistencia
+- `POST /api/attendance/check` - Registrar entrada/salida
+- `GET /api/attendance` - Obtener registros de asistencia
+- `GET /api/attendance/reports` - Generar informes
+
+## Eventos WebSocket
+
+- `connection` - Nuevo usuario conectado
+- `disconnect` - Usuario desconectado
+- `assistance` - Evento de asistencia (entrada/salida)
+- `unassignedCard` - Escaneo de tarjeta no asignada
+
+## Variables de Entorno
+
+El archivo `.env` debe contener las siguientes variables:
+
+| Variable | Descripción |
+|----------|-------------|
+| `FRONTEND_URL` | URL del frontend para CORS |
+| `JWT_SECRET` | Clave secreta para firmar los tokens JWT |
+| `MONGO_URI` | URL completa de conexión a MongoDB |
+| `MONGO_USER` | Usuario de MongoDB |
+| `MONGO_PASSWORD` | Contraseña de MongoDB |
+| `NODE_ENV` | Entorno de ejecución (development/production) |
+| `SMTP_HOST` | Host del servidor SMTP para envío de correos |
+| `SMTP_PORT` | Puerto del servidor SMTP |
+| `SMTP_EMAIL` | Dirección de correo electrónico para envío |
+| `SMTP_PASSWORD` | Contraseña del correo electrónico |
+
+
+## Author
+Bryan Quezada
